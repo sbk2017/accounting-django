@@ -1,0 +1,4 @@
+Reports:
+- Trial balance report add balance it is only Debit and Credit.
+- Vat report for the period. Format will be provided.
+- 

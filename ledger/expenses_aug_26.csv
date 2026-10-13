@@ -1,0 +1,35 @@
+date,reference,supplier,supplier_trn,description,account_code,net_amount,vat_amount,credit_account,custom_department,total_amount
+2026-08-02,,Indeed,,Job Posting,6810, 365.42 ,0,1160,Other expenses, 365.42 
+2026-08-03,2026080334,Buy4less Technology Trading FZE,104491315800003,Materials - Greenspace Patch panel,5120, 95.70 ,4.7852380952381,1160,Supplier COGS, 100.49 
+2026-08-03,133402,Stingray Bldg Materials,100611948900003,Materials,5120, 33.33 ,1.66666666666667,1160,Supplier COGS, 35.00 
+2026-08-04,123523,Enoc ,100221692500003,Petrol,6530, 38.10 ,1.9047619047619,1160,Vehicle expenses, 40.00 
+2026-08-06,,Google One,-,Subcription,6810, 7.34 ,0.367142857142857,1160,Other expenses, 7.71 
+2026-08-06,,VAt Fees On Cross Boarder,,,6820, 0.01 ,0,1160,Bank Charges , 0.01 
+2026-08-06,4120802,Hostwinds,-,Server Charge,6550, 22.99 ,1.14952380952381,1160,Other expenses, 24.14 
+2026-08-10,132811,Enoc ,100221692500003,Petrol,6530, 47.62 ,2.38095238095238,1160,Vehicle expenses, 50.00 
+2026-08-11,133938,Stingray Bldg Materials,100611948900003,Materials,5120, 26.67 ,1.33333333333333,1160,Supplier COGS, 28.00 
+2026-08-11,124376,Enoc ,100221692500003,Petrol,6530, 47.62 ,2.38095238095238,1160,Vehicle expenses, 50.00 
+2026-08-12,13977,Daruish Rent A Car Llc,10039174710003,Car Rental,6530, 352.38 ,17.6190476190476,1160,Vehicle expenses, 370.00 
+2026-08-13,946598630,Parking Fee - Prkn,,Parking Fee,6530, 2.10 ,0,1160,Vehicle expenses, 2.10 
+2026-08-13,946634942,Parking Fee - Prkn,,Parking Fee,6530, 2.10 ,0,1160,Vehicle expenses, 2.10 
+2026-08-13,no receipt,Drinking water (2 bottes),,Paid to Building watchman,6810, 20.00 ,0,1160,Other expenses, 20.00 
+2026-08-13,no receipt,Remote Control fixing for Parking A,,Paid to Building watchman,6810, 20.00 ,0,1160,Other expenses, 20.00 
+2026-08-13,85665,Enoc ,100221692500003,Petrol,6530, 28.57 ,1.42857142857143,1160,Vehicle expenses, 30.00 
+2026-08-13,,Amazon,,Tissue and Camera Cable,5120, 40.68 ,0,1160,Other expenses, 40.68 
+2026-08-15,cancelled,Hostwinds.com,,Subcription for server (cancelled),6550, 83.20 ,0,1160,Other expenses, 83.20 
+2026-08-17,163461,Enoc ,100221692500003,Petrol,6530, 28.57 ,1.42857142857143,1160,Vehicle expenses, 30.00 
+2026-08-17,I-369882/R25,Nestle Water Factory,100224026300003,Water for Office water dispenser,6810, 165.00 ,8.25,1160,Other expenses, 173.25 
+2026-08-19,163981,Enoc ,100221692500003,Petrol,6530, 66.67 ,3.33333333333333,1160,Vehicle expenses, 70.00 
+2026-08-19,64591,Enoc ,100221692500003,Petrol,6530, 28.57 ,1.42857142857143,1160,Vehicle expenses, 30.00 
+2026-08-21,,DHL Worldwide Express LLC,100255554600003,Duties / Charges,5120, 59.76 ,2.98809523809524,1160,Supplier COGS, 62.75 
+2026-08-25,,Emarat,100293326300003,Petrol ,6530, 76.19 ,3.80952380952381,1160,Vehicle expenses, 80.00 
+2026-08-25,,Amazon Now,,,6540, 17.55 ,0,1160,, 17.55 
+2026-08-25,,Amazon Now,,,6540, 15.88 ,0,1160,, 15.88 
+2026-08-25,,Adnoc,10069993200003,Petrol ,6530, 38.10 ,1.9047619047619,1160,Vehicle expenses, 40.00 
+2026-08-26,,Noon,,,6540, 46.49 ,0,1160,, 46.49 
+2026-08-26,,Fix Price General Trading,,,6810, 11.24 ,0,1160,, 11.24 
+2026-08-27,,Virgin Mobile UAE,,,6560, 20.00 ,0,1160,, 20.00 
+2026-08-27,,IPP Transactions,,,6820, 0.49 ,0,1160,, 0.49 
+2026-08-27,,VAT on IPP Transactions,,,6820, 0.02 ,0,1160,, 0.02 
+2026-08-31,,Emarat,100293326300003,Petrol ,6530, 47.62 ,2.38095238095238,1160,Vehicle expenses, 50.00 
+2026-08-31,,Interest on Savings,,,6820, 0.09 ,0,1160,, 0.09 

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Review bank statement</h1>
+<form method="post">
+{% csrf_token %}<input type="hidden" name="token" value="{{ token }}">
+<section>
+<label for="{{ form.bank_account.id_for_label }}">Bank account for this statement</label>
+{{ form.bank_account }}{{ form.bank_account.errors }}
+<p>{{ rows|length }} imported lines. Select the opposite account for every line. Statement debit is money out; statement credit is money in.</p>
+<p>Saving stages the rows for matching or creating draft journal entries.</p>
+</section>
+<section style="overflow-x:auto">
+<table>
+<thead><tr><th>Date</th><th>Description</th><th>Ref</th><th>Debit (AED)</th><th>Credit (AED)</th><th>Opposite account</th></tr></thead>
+<tbody>{% for row in rows %}
+<tr><td>{{ row.date }}</td><td>{{ row.description }}</td><td>{{ row.reference }}</td><td>{{ row.debit_display }}</td><td>{{ row.credit_display }}</td>
+<td><label for="{{ row.form.counter_account.id_for_label }}">Line {{ forloop.counter }}</label>{{ row.form.counter_account }}{{ row.form.counter_account.errors }}</td></tr>
+{% endfor %}</tbody>
+</table>
+</section>
+<button type="submit">Save statement rows</button> <a href="{% url 'imports' %}">Upload another statement</a>
+</form>
+{% endblock %}

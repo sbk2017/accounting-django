@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Dashboard</h1>
+<section>
+<table>
+  <thead><tr><th scope="col">AED</th>{% for period in periods %}<th scope="col">{{ period.label }}<br><small>{{ period.start|date:'d M Y' }} – {{ period.end|date:'d M Y' }}</small></th>{% endfor %}</tr></thead>
+  <tbody>
+    <tr><th scope="row">Sales</th>{% for period in periods %}<td>{{ period.sales }}</td>{% endfor %}</tr>
+    <tr><th scope="row">Gross profit</th>{% for period in periods %}<td>{{ period.gross }}</td>{% endfor %}</tr>
+    <tr><th scope="row">Expenses</th>{% for period in periods %}<td>{{ period.expenses }}</td>{% endfor %}</tr>
+    <tr><th scope="row">Net profit</th>{% for period in periods %}<td>{{ period.profit }}</td>{% endfor %}</tr>
+  </tbody>
+</table>
+<p><small>Amounts in AED. Financial totals include posted entries and reversals. Current month and year to date run through today; last month covers the full month.</small></p>
+</section>
+<div class="cards">
+  <section><small>Drafts</small><h2>{{ drafts }}</h2></section>
+  <section><small>Bank rows to review</small><h2>{{ bank_count }}</h2></section>
+</div>
+{% endblock %}

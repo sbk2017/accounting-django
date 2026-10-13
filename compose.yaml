@@ -1,0 +1,9 @@
+services:
+  accounting:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "${APP_PORT:-8080}:${APP_PORT:-8080}"
+    volumes:
+      - ./data:/data

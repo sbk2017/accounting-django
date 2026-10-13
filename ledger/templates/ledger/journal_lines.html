@@ -1,0 +1,6 @@
+{{ line_forms.management_form }}{% if line_forms.non_form_errors %}<div class="msg error">{{ line_forms.non_form_errors }}</div>{% endif %}
+<p>Select an account and enter either a debit or a credit for each line.</p>
+<table><thead><tr><th>Account</th><th>Debit AED</th><th>Credit AED</th><th>Action</th></tr></thead><tbody id="journal-lines">
+{% for line in line_forms %}<tr class="journal-line" {% if line.DELETE.value %}hidden{% endif %}><td>{{ line.account }}{{ line.account.errors }}{{ line.non_field_errors }}</td><td>{{ line.debit }}{{ line.debit.errors }}</td><td>{{ line.credit }}{{ line.credit.errors }}</td><td><span hidden>{{ line.DELETE }}</span><button type="button" class="remove-line">Remove</button></td></tr>{% endfor %}
+</tbody><tfoot><tr><th>Total</th><th id="total-debit">0.00</th><th id="total-credit">0.00</th><td id="balance-state" aria-live="polite"></td></tr></tfoot></table>
+<template id="empty-journal-line">{% with line=line_forms.empty_form %}<tr class="journal-line"><td>{{ line.account }}</td><td>{{ line.debit }}</td><td>{{ line.credit }}</td><td><span hidden>{{ line.DELETE }}</span><button type="button" class="remove-line">Remove</button></td></tr>{% endwith %}</template>

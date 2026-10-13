@@ -1,0 +1,8 @@
+<script>
+(() => {
+const rows=document.getElementById('journal-lines'), count=document.getElementById('id_lines-TOTAL_FORMS'), add=document.getElementById('add-line');
+function totals(){let d=0,c=0;rows.querySelectorAll('.journal-line:not([hidden])').forEach(r=>{d+=Math.round((Number(r.querySelector('[name$="-debit"]').value)||0)*100);c+=Math.round((Number(r.querySelector('[name$="-credit"]').value)||0)*100);});const format=n=>(n/100).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});document.getElementById('total-debit').textContent=format(d);document.getElementById('total-credit').textContent=format(c);document.getElementById('balance-state').textContent=d>0&&d===c?'Balanced':`Difference: ${format(d-c)}`;}
+add.addEventListener('click',()=>{const i=Number(count.value);if(i>=200)return;rows.insertAdjacentHTML('beforeend',document.getElementById('empty-journal-line').innerHTML.replaceAll('__prefix__',String(i)));count.value=i+1;add.disabled=i+1>=200;rows.lastElementChild.querySelector('select').focus();totals();});
+rows.addEventListener('click',e=>{if(!e.target.classList.contains('remove-line'))return;const r=e.target.closest('.journal-line');r.querySelector('[name$="-DELETE"]').checked=true;r.hidden=true;r.querySelectorAll('input:not([name$="-DELETE"]),select').forEach(f=>f.required=false);totals();});rows.addEventListener('input',totals);totals();
+})();
+</script>

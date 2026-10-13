@@ -1,0 +1,8 @@
+{% extends 'base.html' %}{% block content %}<h1>Recurring JVs</h1><section><table><tr><th>ID</th><th>Name</th><th>Frequency</th><th>Start</th><th>End</th><th>Active</th><th>Action</th></tr>{% for r in templates %}<tr><td>{{ r.pk }}</td><td>{{ r.name }}</td><td>{{ r.frequency }}</td><td>{{ r.start_date }}</td><td>{{ r.end_date|default:'Ongoing' }}</td><td>{{ r.active|yesno:'Yes,No' }}</td><td>{% if user.is_staff %}<form method="post" action="{% url 'toggle_recurring' r.pk %}">{% csrf_token %}<button>Pause/resume</button></form>{% endif %}</td></tr>{% endfor %}</table></section>{% if user.is_staff %}<section><form method="post" action="{% url 'generate_due' %}">{% csrf_token %}<button>Generate due drafts</button></form></section><section><h2>New recurring JV</h2><form method="post" action="{% url 'recurring' %}">{% csrf_token %}
+{{ form.non_field_errors }}
+{% for field in form %}<label>{{ field.label }} {{ field }}{{ field.errors }}</label>{% endfor %}
+{% include 'ledger/journal_lines.html' %}
+<p><button type="button" id="add-line">Add line</button> <button type="submit">Save template</button></p>
+</form></section>
+{% include 'ledger/journal_lines_script.html' %}
+{% endif %}{% endblock %}

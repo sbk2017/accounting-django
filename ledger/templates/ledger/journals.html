@@ -1,0 +1,37 @@
+{% extends 'base.html' %}{% block content %}
+<h1>Journal vouchers</h1>
+<section><form method="get"><h2>Filter journals</h2>
+{% for error in filter_errors %}<p class="msg error">{{ error }}</p>{% endfor %}
+<label>ID <input name="id" type="number" min="1" value="{{ filters.id }}"></label>
+<label>Date from <input name="date_from" type="date" value="{{ filters.date_from }}"></label>
+<label>Date to <input name="date_to" type="date" value="{{ filters.date_to }}"></label>
+<label>Reference <input name="reference" value="{{ filters.reference }}"></label>
+<label>Description <input name="description" value="{{ filters.description }}"></label>
+<label>Source <input name="source" value="{{ filters.source }}"></label>
+<label>Status <select name="status"><option value="">All</option>{% for value,label in statuses %}<option value="{{ value }}" {% if filters.status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+<label>Minimum AED <input name="amount_min" type="number" step="0.01" min="0" value="{{ filters.amount_min }}"></label>
+<label>Maximum AED <input name="amount_max" type="number" step="0.01" min="0" value="{{ filters.amount_max }}"></label>
+<button>Apply filters</button> <a href="{% url 'journals' %}">Clear</a></form></section>
+<section><form method="post" action="{% url 'post_selected_journals' %}" id="bulk-post-form">{% csrf_token %}
+<input type="hidden" name="return_query" value="{{ request.GET.urlencode }}">
+<p>{{ page_obj.paginator.count }} matching vouchers · 20 per page. Amount is the total debit value in AED.</p>
+{% if user.is_staff %}<button id="bulk-post-button" disabled>Post selected (0)</button><p><small>Select drafts on this page. All selected vouchers must pass validation before any are posted.</small></p>{% endif %}
+<table><thead><tr>{% if user.is_staff %}<th><input type="checkbox" id="select-page" aria-label="Select all drafts on this page"></th>{% endif %}<th>ID</th><th>Date</th><th>Reference</th><th>Description</th><th>Source</th><th>Status</th><th style="text-align:right">Amount AED</th></tr></thead>
+<tbody>{% for e in entries %}<tr>{% if user.is_staff %}<td>{% if e.status == 'draft' %}<input class="journal-selection" type="checkbox" name="selected" value="{{ e.pk }}" aria-label="Select JV {{ e.pk }}">{% endif %}</td>{% endif %}<td><a href="{% url 'journal_detail' e.pk %}">{{ e.pk }}</a></td><td>{{ e.date|date:'Y-m-d' }}</td><td>{{ e.reference }}</td><td>{{ e.description }}</td><td>{{ e.source }}</td><td>{{ e.get_status_display }}</td><td style="text-align:right">{{ e.amount_formatted }}</td></tr>{% empty %}<tr><td colspan="9">No vouchers match these filters.</td></tr>{% endfor %}</tbody></table></form>
+<p>{% if page_obj.has_previous %}<a href="?{% if filter_query %}{{ filter_query }}&amp;{% endif %}page={{ page_obj.previous_page_number }}">Previous</a> · {% endif %}Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}{% if page_obj.has_next %} · <a href="?{% if filter_query %}{{ filter_query }}&amp;{% endif %}page={{ page_obj.next_page_number }}">Next</a>{% endif %}</p></section>
+<section><h2>New journal voucher</h2><form method="post" id="journal-entry-form" action="{% url 'journals' %}">{% csrf_token %}
+{{ entry_form.non_field_errors }}{% for field in entry_form %}<label>{{ field.label }} {{ field }}{{ field.errors }}</label>{% endfor %}
+{% include 'ledger/journal_lines.html' %}
+<p><button type="button" id="add-line">Add line</button> <button>Create draft</button></p></form>
+</section>
+<script>
+(() => {
+const boxes=[...document.querySelectorAll('.journal-selection')], select=document.getElementById('select-page'), post=document.getElementById('bulk-post-button');
+function selection(){const n=boxes.filter(b=>b.checked).length;if(post){post.disabled=!n;post.textContent=`Post selected (${n})`;}if(select){select.checked=boxes.length>0&&n===boxes.length;select.indeterminate=n>0&&n<boxes.length;}}
+if(select)select.addEventListener('change',()=>{boxes.forEach(b=>b.checked=select.checked);selection();});boxes.forEach(b=>b.addEventListener('change',selection));
+document.getElementById('bulk-post-form').addEventListener('submit',e=>{const n=boxes.filter(b=>b.checked).length;if(!n||!confirm(`Post ${n} selected voucher(s)?`))e.preventDefault();});
+selection();
+})();
+</script>
+{% include 'ledger/journal_lines_script.html' %}
+{% endblock %}
