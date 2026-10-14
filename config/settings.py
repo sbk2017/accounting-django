@@ -20,3 +20,6 @@ SESSION_COOKIE_HTTPONLY=True;SESSION_COOKIE_SAMESITE='Lax'
 # Keep the CSRF secret in the login session instead of a separate browser cookie.
 CSRF_USE_SESSIONS=True
 LOGGING={'version':1,'disable_existing_loggers':False,'formatters':{'verbose':{'format':'%(asctime)s %(levelname)s %(name)s %(message)s'}},'handlers':{'console':{'class':'logging.StreamHandler','formatter':'verbose'},'file':{'class':'logging.handlers.RotatingFileHandler','filename':str(DATA_DIR/'app.log'),'maxBytes':2000000,'backupCount':3,'formatter':'verbose'}},'root':{'handlers':['console','file'],'level':os.getenv('LOG_LEVEL','INFO')},'loggers':{'django.request':{'handlers':['console','file'],'level':'WARNING','propagate':False}}}
+
+# Separate read-only credential; blank disables the reporting API.
+REPORTING_API_TOKEN=os.getenv('REPORTING_API_TOKEN','')

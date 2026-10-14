@@ -1,3 +1,10 @@
 from django.urls import path
 from . import views
 urlpatterns=[path('',views.dashboard,name='dashboard'),path('accounts/',views.accounts,name='accounts'),path('journals/',views.journals,name='journals'),path('journals/post-selected/',views.post_selected_journals,name='post_selected_journals'),path('journals/<int:pk>/',views.journal_detail,name='journal_detail'),path('journals/<int:pk>/post/',views.post_journal,name='post_journal'),path('journals/<int:pk>/reverse/',views.reverse_journal,name='reverse_journal'),path('recurring/',views.recurring,name='recurring'),path('recurring/generate/',views.generate_due,name='generate_due'),path('recurring/<int:pk>/toggle/',views.toggle_recurring,name='toggle_recurring'),path('imports/',views.imports,name='imports'),path('bank/',views.bank,name='bank'),path('bank/statement/',views.bank_statement,name='bank_statement'),path('bank/<int:pk>/draft/',views.bank_draft,name='bank_draft'),path('bank/<int:pk>/match/',views.bank_match,name='bank_match'),path('reports/',views.reports,name='reports'),path('ledger/<str:code>/',views.ledger,name='ledger'),path('settings/',views.settings_view,name='settings')]
+
+from . import api
+urlpatterns += [
+    path('api/v1/accounts/', api.accounts, name='api_accounts'),
+    path('api/v1/reports/', api.reports, name='api_reports'),
+    path('api/v1/ledger/<str:code>/', api.ledger, name='api_ledger'),
+]

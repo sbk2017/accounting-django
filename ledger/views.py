@@ -310,7 +310,7 @@ def reports(request):
     balance=[{'name':r['account__code']+' '+r['account__name'],'value':money(r['dr']-r['cr'] if r['account__type']=='asset' else r['cr']-r['dr'])} for r in bal if r['account__type'] in ('asset','liability','equity')]
     earnings=sum((r['cr']-r['dr'] if r['account__type']=='income' else r['dr']-r['cr'])* (1 if r['account__type']=='income' else -1) for r in bal if r['account__type'] in ('income','cogs','expense'))
     balance.append({'name':'Current and prior earnings','value':money(earnings)})
-    for r in rows:r.update(dr_fmt=money(r['dr']),cr_fmt=money(r['cr']),normal_fmt=money(r['normal']))
+    for r in rows:r.update(dr_fmt=money(r['dr']),cr_fmt=money(r['cr']),normal_fmt=money(r['normal']),balance_fmt=money(r['dr']-r['cr']))
     return render(request,'ledger/reports.html',{'year':year,'month':month,'period':period,'rows':rows,'sales':money(sums['income']),'cogs':money(sums['cogs']),'gross':money(sums['income']-sums['cogs']),'expenses':money(sums['expense']),'profit':money(sums['income']-sums['cogs']-sums['expense']),'vatout':money(vatout),'vatin':money(vatin),'vatnet':money(vatout-vatin),'balance':balance})
 def calendar_last(y,m):
     import calendar

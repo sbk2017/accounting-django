@@ -1,4 +1,8 @@
-Reports:
-- Trial balance report add balance it is only Debit and Credit.
+
+- Trial balance report add balance currently it is only Debit and Credit.
+- in the report/ledger for each account show the source.
+- add api for the AI agent to be able to pull the data for reporting.
+- make api document for the AI agent.
+
+
 - Vat report for the period. Format will be provided.
-- 

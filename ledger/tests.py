@@ -525,3 +525,89 @@ class RecurringFormTests(TestCase):
         self.user.save()
         self.assertEqual(self.client.post(reverse('recurring'),self.payload()).status_code,400)
         self.assertFalse(RecurringJV.objects.exists())
+
+@override_settings(ALLOWED_HOSTS=['testserver'], REPORTING_API_TOKEN='test-report-token')
+class ReportingAPITests(TestCase):
+    def setUp(self):
+        svc.bootstrap()
+        self.auth = {'HTTP_AUTHORIZATION': 'Bearer test-report-token'}
+        self.old = self.entry('2026-08-31', 10000)
+        self.current = self.entry('2026-09-01', 2500, 'csv_expense')
+        self.entry('2026-09-02', 700, post=False)
+        self.entry('2026-10-01', 500)
+
+    def entry(self, day, amount, source='manual', post=True):
+        entry = svc.create_entry(day, 'REF', 'Example transaction', source,
+                                 [('6100', amount, 0), ('2100', 0, amount)])
+        if post:
+            svc.post(entry.pk)
+        return entry
+
+    def test_authentication_disabled_token_and_read_only(self):
+        url = reverse('api_reports')
+        self.assertEqual(self.client.get(url).status_code, 401)
+        self.assertEqual(self.client.get(url, HTTP_AUTHORIZATION='Bearer wrong').status_code, 401)
+        with override_settings(REPORTING_API_TOKEN=''):
+            self.assertEqual(self.client.get(url, **self.auth).status_code, 401)
+        for method in ('post', 'put', 'patch', 'delete'):
+            self.assertEqual(getattr(self.client, method)(url, **self.auth).status_code, 405)
+        self.assertEqual(self.client.get(url, **self.auth)['Cache-Control'], 'no-store')
+
+    def test_reports_period_and_cumulative_balances(self):
+        data = self.client.get(reverse('api_reports'), {'date_from': '2026-09-01', 'date_to': '2026-09-30'}, **self.auth).json()
+        self.assertEqual(data['trial_balance']['totals'], {'debit': 2500, 'credit': 2500, 'balance': 0})
+        self.assertEqual(data['profit_and_loss']['net_profit'], -2500)
+        self.assertEqual(data['balance_sheet']['earnings'], -12500)
+        self.assertEqual(data['balance_sheet']['rows'][0]['balance'], 12500)
+        self.assertEqual(data['trial_balance']['rows'][0]['balance'], -2500)
+
+    def test_ledger_opening_pagination_source_and_drafts(self):
+        url = reverse('api_ledger', args=['6100'])
+        data = self.client.get(url, {'page_size': 1, 'page': 2}, **self.auth).json()
+        self.assertEqual(data['count'], 3)
+        self.assertEqual(data['results'][0]['balance'], 12500)
+        self.assertEqual(data['results'][0]['source'], 'csv_expense')
+        self.assertEqual(data['closing_balance'], 13000)
+        data = self.client.get(url, {'date_from': '2026-09-01', 'date_to': '2026-09-30'}, **self.auth).json()
+        self.assertEqual(data['opening_balance'], 10000)
+        self.assertEqual(data['closing_balance'], 12500)
+        data = self.client.get(url, {'source': 'csv_expense'}, **self.auth).json()
+        self.assertEqual(data['count'], 1)
+        self.assertEqual(data['closing_balance'], 2500)
+        self.assertEqual(self.client.get(reverse('api_ledger', args=['missing']), **self.auth).status_code, 404)
+
+    def test_reversed_entries_remain_in_reports(self):
+        with patch('ledger.services.timezone.localdate', return_value=date(2026, 9, 3)):
+            reversal = svc.reverse(self.current.pk)
+        data = self.client.get(reverse('api_ledger', args=['6100']), **self.auth).json()
+        self.assertEqual(data['count'], 4)
+        self.assertEqual(data['closing_balance'], 10500)
+        self.assertEqual(data['results'][2]['journal_id'], reversal.pk)
+        self.assertEqual(data['results'][2]['reverses_id'], self.current.pk)
+        data = self.client.get(reverse('api_reports'), {'date_from': '2026-09-01', 'date_to': '2026-09-30'}, **self.auth).json()
+        self.assertEqual(data['profit_and_loss']['net_profit'], 0)
+
+    def test_validation_accounts_and_empty_ledger(self):
+        url = reverse('api_ledger', args=['6100'])
+        for params in ({'page': 0}, {'page': 999}, {'page_size': 501}, {'page': 'bad'},
+                       {'date_from': 'bad'}, {'date_from': '2026-02-30'},
+                       {'date_from': '2026-10-01', 'date_to': '2026-09-01'}, {'unknown': 'x'}):
+            self.assertEqual(self.client.get(url, params, **self.auth).status_code, 400)
+        self.assertEqual(self.client.get(url + '?page=1&page=2', **self.auth).status_code, 400)
+        data = self.client.get(reverse('api_accounts'), {'page_size': 2}, **self.auth).json()
+        self.assertEqual(len(data['results']), 2)
+        self.assertEqual(data['next_page'], 2)
+        data = self.client.get(reverse('api_ledger', args=['1100']), **self.auth).json()
+        self.assertEqual(data['results'], [])
+        self.assertEqual(data['closing_balance'], 0)
+
+    def test_report_and_ledger_ui(self):
+        self.client.force_login(get_user_model().objects.create_user('report-viewer'))
+        response = self.client.get(reverse('reports'), {'year': 2026, 'month': 9})
+        self.assertContains(response, 'Balance AED (debit − credit)')
+        self.assertContains(response, '-25.00')
+        self.current.source_key = 'expense:example:1'
+        self.current.save(update_fields=['source_key'])
+        response = self.client.get(reverse('ledger', args=['6100']))
+        self.assertContains(response, 'csv_expense')
+        self.assertContains(response, 'expense:example:1')
