@@ -4,3 +4,5 @@ __pycache__/
 data/
 staticfiles/
 *.sqlite3
+*.csv
+*.zip
