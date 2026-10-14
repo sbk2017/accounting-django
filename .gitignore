@@ -6,3 +6,4 @@ staticfiles/
 *.sqlite3
 *.csv
 *.zip
+*.backup
